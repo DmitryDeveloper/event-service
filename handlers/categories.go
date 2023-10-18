@@ -1,10 +1,11 @@
 package handlers
 
 import (
-    "github.com/labstack/echo"
+	"net/http"
 	"strconv"
-    "net/http"
+
 	m "github.com/DmitryDeveloper/event-service/models"
+	"github.com/labstack/echo"
 )
 
 func AllCategories(c echo.Context) error {
@@ -14,15 +15,15 @@ func AllCategories(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Cannot get categories"})
 	}
 
-    return c.JSON(http.StatusOK, categories)
+	return c.JSON(http.StatusOK, categories)
 }
 
 func ShowCategory(c echo.Context) error {
 	var category m.Category
 	sid := c.Param("id")
-	id, err := strconv.Atoi(sid)
+	id, _ := strconv.Atoi(sid)
 
-	err = category.GetById(id)
+	err := category.GetById(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Cannot get category with id " + sid})
 	}
@@ -33,14 +34,14 @@ func ShowCategory(c echo.Context) error {
 func CreateCategory(c echo.Context) error {
 	category := new(m.Category)
 	if err := c.Bind(category); err != nil {
-        return err
-    }
+		return err
+	}
 
 	res := category.Create()
 
-	if res == false {
-        return c.String(http.StatusInternalServerError, "Cannot create category")
-    }
+	if !res {
+		return c.String(http.StatusInternalServerError, "Cannot create category")
+	}
 
-    return c.String(http.StatusOK, "Category created")
+	return c.String(http.StatusOK, "Category created")
 }

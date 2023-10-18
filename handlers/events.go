@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"fmt"
-    "github.com/labstack/echo"
+	"net/http"
 	"strconv"
-    "net/http"
+
 	m "github.com/DmitryDeveloper/event-service/models"
+	"github.com/labstack/echo"
 )
 
 func AllEvents(c echo.Context) error {
@@ -15,17 +16,17 @@ func AllEvents(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Cannot get events"})
 	}
 
-    return c.JSON(http.StatusOK, events)
+	return c.JSON(http.StatusOK, events)
 }
 
 func ShowEvent(c echo.Context) error {
 	var event m.Event
 	sid := c.Param("id")
-	id, err := strconv.Atoi(sid)
+	id, _ := strconv.Atoi(sid)
 
 	fmt.Println("Event ID = ", id)
 
-	err = event.GetById(id)
+	err := event.GetById(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Cannot get event with id " + sid})
 	}
@@ -35,7 +36,7 @@ func ShowEvent(c echo.Context) error {
 
 func GetEventsForCategory(c echo.Context) error {
 	cid := c.Param("id")
-	categoryId, err := strconv.Atoi(cid)
+	categoryId, _ := strconv.Atoi(cid)
 
 	var e m.Event
 	events, err := e.GetByCategoryId(categoryId)
@@ -43,21 +44,21 @@ func GetEventsForCategory(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Cannot get events"})
 	}
 
-    return c.JSON(http.StatusOK, events)
+	return c.JSON(http.StatusOK, events)
 }
 
 func CreateEvent(c echo.Context) error {
 	data := make(map[string]interface{})
 
-    // Пробуем прочитать и распарсить JSON-данные из тела запроса
-    if err := c.Bind(&data); err != nil {
-        return err
-    }
+	// Пробуем прочитать и распарсить JSON-данные из тела запроса
+	if err := c.Bind(&data); err != nil {
+		return err
+	}
 
 	categoryIDs, ok := data["categories"].([]interface{})
 	if !ok {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid categories format"})
-    }
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid categories format"})
+	}
 
 	// Проверяем существование категорий
 	var categories []m.Category
@@ -79,9 +80,9 @@ func CreateEvent(c echo.Context) error {
 
 	res := e.Create()
 
-	if res == false {
-        return c.String(http.StatusInternalServerError, "Cannot create event")
-    }
+	if !res {
+		return c.String(http.StatusInternalServerError, "Cannot create event")
+	}
 
-    return c.String(http.StatusOK, "Event Created")
+	return c.String(http.StatusOK, "Event Created")
 }

@@ -20,6 +20,9 @@ func main() {
 	e.POST("/events", h.CreateEvent)
 	e.GET("/categories/:id/events", h.GetEventsForCategory)
 
+	e.POST("events/:id/subscribe", h.Subscribe)
+	e.POST("event/:id/unsubscribe", h.Unsubscribe)
+
 	e.GET("/categories/:id", h.ShowCategory)
 	e.GET("/categories", h.AllCategories)
 	e.POST("/categories", h.CreateCategory)
