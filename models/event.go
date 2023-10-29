@@ -8,13 +8,22 @@ import (
 type Event struct {
 	gorm.Model
 	BaseModel
-	Title            string     `json:"title" validate:"required"`
-	ShortDescription string     `json:"short_description" validate:"required"`
-	Description      string     `json:"description" validate:"required"`
-	UserId           int        `json:"user_id" validate:"required"`
-	IsApproved       bool       `json:"is_approved"`
-	Categories       []Category `gorm:"many2many:event_categories;" json:"categories" validate:"required"`
+	Title            string      `json:"title" validate:"required"`
+	ShortDescription string      `json:"short_description" validate:"required"`
+	Description      string      `json:"description" validate:"required"`
+	UserId           int         `json:"user_id" validate:"required"`
+	IsApproved       bool        `json:"is_approved"`
+	Categories       []Category  `gorm:"many2many:event_categories;" json:"categories" validate:"required"`
+	Status           EventStatus `json:"status" validate:"required,oneof=active canceled completed"`
 }
+
+type EventStatus string
+
+const (
+	StatusActive    EventStatus = "active"
+	StatusCanceled  EventStatus = "canceled"
+	StatusCompleted EventStatus = "completed"
+)
 
 func (event *Event) Create() bool {
 	//validate fields, it uses tags in struct fields

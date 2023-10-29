@@ -28,8 +28,6 @@ services:
       MYSQL_DATABASE: event_service
     volumes:
       - dbdata:/var/lib/mysql/
-      - ./init-scripts:/docker-entrypoint-initdb.d 
-    command: --init-file=/docker-entrypoint-initdb.d/init.sql  
     ports:
       - "3306:3306"
     networks:

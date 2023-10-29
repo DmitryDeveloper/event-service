@@ -76,6 +76,7 @@ func CreateEvent(c echo.Context) error {
 		UserId:           int(data["user_id"].(float64)),
 		IsApproved:       false,
 		Categories:       data["categories"].([]m.Category),
+		Status:           m.StatusActive,
 	}
 
 	res := e.Create()
