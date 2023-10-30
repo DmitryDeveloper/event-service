@@ -32,10 +32,25 @@ services:
       - "3306:3306"
     networks:
       - backend-network
+
+  rabbitmq-ui:
+    container_name: rabbitmq-ui
+    hostname: rabbitmq-ui
+    image: rabbitmq:management
+    restart: unless-stopped
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend-network    
       
 networks:
   backend-network:
 
 volumes:
-  dbdata:
+  rabbitmq-data:
     driver: local
+  dbdata:
+    driver: local   
